@@ -49,9 +49,9 @@ pre {
 	--select-text-font-color: #fff;
 }
 
-html {
+/* html {
 	font-size: 16px;
-}
+} */
 
 html, body {
 	background-color: #f3f2ee;
@@ -882,4 +882,9 @@ input {
 }
 .msr_sendbtn_04_disabled input[type=submit]:hover {
   opacity: 1;
+}
+
+textarea {
+  font-family : inherit;
+  font-size : 500%;
 }
