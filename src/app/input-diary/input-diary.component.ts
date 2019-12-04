@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { AuthService } from '../services/auth/auth.service';
 
 @Component({
   selector: 'app-input-diary',
@@ -7,12 +8,12 @@ import { Component, OnInit } from '@angular/core';
 })
 export class InputDiaryComponent implements OnInit {
   text = '';
-  inputText() {
-
-  }
-  constructor() { }
+  disabled = !this.auth.user$;
+  constructor(private auth: AuthService) { }
 
   ngOnInit() {
   }
+  inputText() {
 
+  }
 }
