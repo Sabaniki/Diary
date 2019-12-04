@@ -8,7 +8,6 @@ import { AuthService } from '../services/auth/auth.service';
 })
 export class InputDiaryComponent implements OnInit {
   text = '';
-  disabled = !this.auth.user$;
   constructor(private auth: AuthService) { }
 
   ngOnInit() {

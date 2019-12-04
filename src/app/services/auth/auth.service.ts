@@ -29,8 +29,8 @@ export class AuthService {
       );
   }
 
-  async googleSignin() {
-    const provider = new auth.GoogleAuthProvider();
+  async twitterSignin() {
+    const provider = new auth.TwitterAuthProvider();
     const credential = await this.afAuth.auth.signInWithPopup(provider);
     return this.updateUserData(credential.user as User);
   }
@@ -41,7 +41,6 @@ export class AuthService {
 
     const data: User = {
       uid: user.uid,
-      email: user.email,
       displayName: user.displayName,
       photoURL: user.photoURL,
     };
