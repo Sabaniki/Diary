@@ -3,4 +3,5 @@ export class User {
   displayName?: string;
   photoURL?: string;
   profile?: string;
+  twitterID?: string;
 }

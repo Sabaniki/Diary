@@ -32,6 +32,8 @@ export class AuthService {
   async twitterSignin() {
     const provider = new auth.TwitterAuthProvider();
     const credential = await this.afAuth.auth.signInWithPopup(provider);
+    (credential.user as User).twitterID = credential.additionalUserInfo.username;
+    console.log(credential.user);
     return this.updateUserData(credential.user as User);
   }
 
@@ -43,6 +45,7 @@ export class AuthService {
       uid: user.uid,
       displayName: user.displayName,
       photoURL: user.photoURL,
+      twitterID: user.twitterID
     };
     return userRef.set(data, { merge: true });
   }
