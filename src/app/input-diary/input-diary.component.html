@@ -1,4 +1,5 @@
 <div class="msr_textarea_04">
   <label for="text">本文</label>
-  <textarea name="diaryBody" [(ngModel)]="text" (input)="inputText()"></textarea>
+  <textarea name="diaryBody" [(ngModel)]="diary.text" (input)="inputText()"></textarea>
+  <button class="btn btn-dark" (click)="onClickSaveButton()">保存する</button>
 </div>
