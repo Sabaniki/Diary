@@ -1,8 +1,10 @@
+import { Diary } from './diary';
+
 export class User {
   uid: string;
   displayName?: string;
   photoURL?: string;
   profile?: string;
   twitterID?: string;
-  text?: string;
+  // diaries ? = new Array<Diary>();
 }

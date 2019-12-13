@@ -6,6 +6,7 @@ import { AngularFirestore, AngularFirestoreDocument } from '@angular/fire/firest
 import { Observable, of } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 import {User} from '../../shared/classes/user';
+import { Diary } from 'src/app/shared/classes/diary';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
@@ -33,7 +34,7 @@ export class AuthService {
     const provider = new auth.TwitterAuthProvider();
     const credential = await this.afAuth.auth.signInWithPopup(provider);
     (credential.user as User).twitterID = credential.additionalUserInfo.username;
-    (credential.user as User).text = '';
+    // if ((credential.user as User).diaries === undefined) { (credential.user as User).diaries = new Array<Diary>(); }
     console.log(credential.user);
     return this.updateUserData(credential.user as User);
   }
@@ -47,7 +48,7 @@ export class AuthService {
       displayName: user.displayName,
       photoURL: user.photoURL,
       twitterID: user.twitterID,
-      text: user.text
+      // diaries: user.diaries
     };
     return userRef.set(data, { merge: true });
   }

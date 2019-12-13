@@ -1,5 +1,5 @@
 export class Diary {
-  constructor(public completedUsername: string) {}
+  constructor() {}
   text?: string;
   createdAt?: string;
   id?: string;

@@ -12,9 +12,10 @@ import { formatDate } from '@angular/common';
   styleUrls: ['./input-diary.component.css', '../newsprint/newsprict.css']
 })
 export class InputDiaryComponent implements OnInit {
-  diary = new Diary('');
+  currentUid: string;
   now = new Date();
-  diaryRef: AngularFirestoreCollection<Diary>;
+  diary = new Diary();
+  diaryRef: AngularFirestoreDocument<Array<Diary>>;
 
   constructor(
     private auth: AuthService,
@@ -24,9 +25,9 @@ export class InputDiaryComponent implements OnInit {
 
   ngOnInit() {
     this.auth.user$.subscribe(user => {
-      this.diaryRef = this.afs.collection('diaries');
+      this.diaryRef = this.afs.doc(`users/${user.uid}`);
       // this.diaryRef.doc;
-      this.diary = new Diary(user.uid);
+      // this.diary = new Diary(user.uid);
     });
   }
 
@@ -35,15 +36,20 @@ export class InputDiaryComponent implements OnInit {
 
   onClickSaveButton() {
     this.diary.createdAt = formatDate(this.now, 'yyyy/MM/dd', this.locale);
-    this.diaryRef.add(Object.assign({}, this.diary)).then(value => {
-      swal({
-        text: '日記を保存しました！',
-        icon: 'success',
+    this.auth.user$.subscribe(user => {
+      this.diaryRef.collection('diaries').add(Object.assign({}, this.diary)).then(() => {
+        swal({
+          text: '日記を保存しました！',
+          icon: 'success',
+        });
+        this.diary.text = '';
+      },
+      reason => {
+        swal({
+          text: 'エラーが発生しました！' + reason.toString(),
+          icon: 'error',
+        });
       });
-      console.log('value: ' + value.id);
-      this.diary.id = value.id;
-      this.diaryRef.doc(value.id).set(Object.assign({}, this.diary));
-      this.diary.text = '';
     });
   }
 }
