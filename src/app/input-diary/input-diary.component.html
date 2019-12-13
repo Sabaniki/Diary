@@ -1,5 +1,6 @@
 <div class="msr_textarea_04">
   <label for="text">本文</label>
+  <div>{{now | date:"yyyy年MM月dd日"}}</div>
   <textarea name="diaryBody" [(ngModel)]="diary.text" (input)="inputText()"></textarea>
   <button class="btn btn-dark" (click)="onClickSaveButton()">保存する</button>
 </div>
