@@ -6,5 +6,5 @@ export class User {
   photoURL?: string;
   profile?: string;
   twitterID?: string;
-  // diaries ? = new Array<Diary>();
+  latestDiaryId?: string;
 }

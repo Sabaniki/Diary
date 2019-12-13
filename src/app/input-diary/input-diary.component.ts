@@ -25,7 +25,14 @@ export class InputDiaryComponent implements OnInit {
 
   ngOnInit() {
     this.auth.user$.subscribe(user => {
-      this.diaryRef = this.afs.doc(`users/${user.uid}`);
+      if (!!user) {
+        this.diaryRef = this.afs.doc(`users/${user.uid}`);
+      } else {
+        swal({
+          text: 'Twitterによるログインが必要です',
+          icon: 'warning'
+        });
+      }
       // this.diaryRef.doc;
       // this.diary = new Diary(user.uid);
     });
@@ -35,14 +42,21 @@ export class InputDiaryComponent implements OnInit {
   }
 
   onClickSaveButton() {
+    console.log('onClickSaveButton');
     this.diary.createdAt = formatDate(this.now, 'yyyy/MM/dd', this.locale);
     this.auth.user$.subscribe(user => {
-      this.diaryRef.collection('diaries').add(Object.assign({}, this.diary)).then(() => {
+      this.diaryRef.collection('diaries').add(Object.assign({}, this.diary)).then(value => {
+        if (this.diary.text === '') {
+          return;
+        }
         swal({
           text: '日記を保存しました！',
           icon: 'success',
+        }).then(() => {
+          user.latestDiaryId = value.id;
+          this.afs.doc(`users/${user.uid}`).update(user);
+          this.diary.text = '';
         });
-        this.diary.text = '';
       },
       reason => {
         swal({
