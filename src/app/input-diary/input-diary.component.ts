@@ -15,11 +15,17 @@ export class InputDiaryComponent implements OnInit {
   diary = new Diary('');
   now = new Date();
   diaryRef: AngularFirestoreCollection<Diary>;
-  constructor(private auth: AuthService, private afs: AngularFirestore, @Inject(LOCALE_ID) private locale: string) { }
+
+  constructor(
+    private auth: AuthService,
+    private afs: AngularFirestore,
+    @Inject(LOCALE_ID) private locale: string
+  ) { }
 
   ngOnInit() {
     this.auth.user$.subscribe(user => {
       this.diaryRef = this.afs.collection('diaries');
+      // this.diaryRef.doc;
       this.diary = new Diary(user.uid);
     });
   }
@@ -28,12 +34,15 @@ export class InputDiaryComponent implements OnInit {
   }
 
   onClickSaveButton() {
-    this.diary.createdAt = formatDate(this.now,　'yyyy/MM/dd/HH:mm', this.locale);
-    this.diaryRef.add(Object.assign({}, this.diary)).then(() => {
+    this.diary.createdAt = formatDate(this.now, 'yyyy/MM/dd', this.locale);
+    this.diaryRef.add(Object.assign({}, this.diary)).then(value => {
       swal({
         text: '日記を保存しました！',
         icon: 'success',
       });
+      console.log('value: ' + value.id);
+      this.diary.id = value.id;
+      this.diaryRef.doc(value.id).set(Object.assign({}, this.diary));
       this.diary.text = '';
     });
   }
