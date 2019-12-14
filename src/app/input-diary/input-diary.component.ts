@@ -42,10 +42,10 @@ export class InputDiaryComponent implements OnInit {
   }
 
   onClickSaveButton() {
-    console.log('onClickSaveButton');
-    this.diary.createdAt = formatDate(this.now, 'yyyy/MM/dd', this.locale);
+    this.diary.createdAt = formatDate(this.now, 'yyyy/MM/dd/hh:ss', this.locale);
     this.auth.user$.subscribe(user => {
       this.diaryRef.collection('diaries').add(Object.assign({}, this.diary)).then(value => {
+        console.log(`this.diaryRef.collection('diaries').add(Object.assign({}, this.diary)).then`);
         if (this.diary.text === '') {
           return;
         }
