@@ -48,6 +48,7 @@ export class AuthService {
       displayName: user.displayName,
       photoURL: user.photoURL,
       twitterID: user.twitterID,
+      latestDiaryId: user.latestDiaryId
       // diaries: user.diaries
     };
     return userRef.set(data, { merge: true });
