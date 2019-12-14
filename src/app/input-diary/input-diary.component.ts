@@ -13,8 +13,8 @@ import { formatDate } from '@angular/common';
 })
 export class InputDiaryComponent implements OnInit {
   currentUid: string;
-  now = new Date();
-  diary = new Diary();
+  now: Date;
+  diary: Diary;
   diaryRef: AngularFirestoreDocument<Array<Diary>>;
 
   constructor(
@@ -24,6 +24,8 @@ export class InputDiaryComponent implements OnInit {
   ) { }
 
   ngOnInit() {
+    this.now = new Date();
+    this.diary = new Diary();
     this.auth.user$.subscribe(user => {
       if (!!user) {
         this.diaryRef = this.afs.doc(`users/${user.uid}`);
@@ -33,8 +35,9 @@ export class InputDiaryComponent implements OnInit {
           icon: 'warning'
         });
       }
-      // this.diaryRef.doc;
-      // this.diary = new Diary(user.uid);
+      if (!!user.latestDiaryCreatedAt && user.latestDiaryCreatedAt === formatDate(this.now, 'yyyy-MM-dd', this.locale)) {
+        this.diaryRef.collection('diaries').doc(user.latestDiaryCreatedAt).get().subscribe(doc => this.diary = doc.data());
+      }
     });
   }
 
@@ -42,27 +45,23 @@ export class InputDiaryComponent implements OnInit {
   }
 
   onClickSaveButton() {
-    this.diary.createdAt = formatDate(this.now, 'yyyy/MM/dd/hh:ss', this.locale);
-    this.auth.user$.subscribe(user => {
-      this.diaryRef.collection('diaries').add(Object.assign({}, this.diary)).then(value => {
-        console.log(`this.diaryRef.collection('diaries').add(Object.assign({}, this.diary)).then`);
-        if (this.diary.text === '') {
-          return;
-        }
-        swal({
-          text: '日記を保存しました！',
-          icon: 'success',
-        }).then(() => {
-          user.latestDiaryId = value.id;
+    this.diary.createdAt = formatDate(this.now, 'yyyy-MM-dd', this.locale);
+    this.diaryRef.collection('diaries').doc(this.diary.createdAt).set(Object.assign({}, this.diary)).then(() => {
+      swal({
+        text: '日記を保存しました！',
+        icon: 'success',
+      }).then(() => {
+        this.auth.user$.subscribe(user => {
+          user.latestDiaryCreatedAt = this.diary.createdAt;
           this.afs.doc(`users/${user.uid}`).update(user);
-          this.diary.text = '';
         });
-      },
-      reason => {
-        swal({
-          text: 'エラーが発生しました！' + reason.toString(),
-          icon: 'error',
-        });
+        this.diary.text = '';
+      });
+    },
+    reason => {
+      swal({
+        text: 'エラーが発生しました！' + reason.toString(),
+        icon: 'error',
       });
     });
   }
